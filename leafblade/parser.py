@@ -74,7 +74,7 @@ class Parser:
 
 			return self.raw_string
 		if c == '"':
-			string = StringNode(None, None)
+			string = StringNode(self.current_indent, None)
 			string.parent = self.context
 
 			if isinstance(self.context, AttributeNode):
@@ -108,13 +108,6 @@ class Parser:
 		self.context.code += c
 		return self.code
 
-	def unindent(self):
-		while self.context.indent is None or self.current_indent <= self.context.indent:
-			self.context = self.context.parent
-
-		if self.current_indent > self.context.indent + 1:
-			raise SyntaxError("Excessive indent")
-
 	def indent(self, c):
 		if c == "\n":
 			# TODO: Print trailing whitespace warning if current_indent > 0?
@@ -122,7 +115,12 @@ class Parser:
 			return self.indent
 
 		if c != "\t":
-			self.unindent()
+			while self.current_indent <= self.context.indent:
+				self.context = self.context.parent
+
+			if self.current_indent > self.context.indent + 1:
+				raise SyntaxError("Excessive indent")
+
 			return self.content(c)
 
 		self.current_indent += 1
@@ -147,12 +145,16 @@ class Parser:
 			self.current_identifier += ":" + c
 			return self.identifier(c)
 
-		self.context = AttributeNode(None, self.context, self.current_identifier)
+		self.context = AttributeNode(self.current_indent, self.context, self.current_identifier)
 		return self.content(c)
 
 	def string(self, c):
 		if c == '"':
-			self.unindent()
+			self.context = self.context.parent
+
+			if isinstance(self.context, AttributeNode):
+				self.context = self.context.parent
+
 			return self.content
 		if c == "\\":
 			return self.escape
