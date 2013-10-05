@@ -87,7 +87,7 @@ class Parser:
 			self.context = string
 
 			return self.string
-		if c.isspace():
+		if c == " ":
 			return self.content
 		if c.isalpha():
 			self.current_identifier = ""
