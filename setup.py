@@ -10,7 +10,7 @@ escape = Extension("leafblade_escape", sources=["leafblade/escape.c"])
 
 setup(
 	name="leaf-blade",
-	version="0.1.2",
+	version="0.2.0",
 	packages=["leafblade"],
 	ext_modules=[escape],
 	description="A template engine for HTML",

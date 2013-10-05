@@ -1,4 +1,4 @@
-import imp
+from types import ModuleType
 from leafblade.utilities import CodeBlock, escape_content, escape_attribute_value, void_tags
 from leafblade.parser import ElementNode, AttributeNode, StringNode, CodeNode
 
@@ -93,8 +93,7 @@ def compile_tree(tree, **kwargs):
 
 	filename = kwargs.get("filename", "<string>")
 	compiled = compile(source, filename, "exec")
-	module = imp.new_module(filename)
-	module.__name__ = filename
+	module = ModuleType(filename)
 	exec(compiled, module.__dict__)
 
 	return module

@@ -9,7 +9,7 @@ data = {
 	"charset": '&quot;"><script></script><"'
 }
 
-leafblade_template = leafblade.compile("""
+leafblade_template = leafblade.Template("""
 doctype
 
 html
